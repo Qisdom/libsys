@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.CategoryMapper">
+    <insert id="save">
+        insert into category(name,id,pid,remark)
+        values(#{name},#{id},#{pid},#{remark})
+    </insert>
+    <update id="updateById">
+        update category set name = #{name} , pid = #{pid} ,remark=#{remark}   where id = #{id}
+    </update>
+    <delete id="deleteById">
+        delete from category where id = #{id}
+    </delete>
+
+    <select id="list" resultType="com.example.demo.entity.Category">
+        select * from category
+    </select>
+    
+    <resultMap id="categoryMap" type="com.example.demo.entity.Category">
+        <id column="id" property="id"></id>
+        <result column="name" property="name"></result>
+        <result column="pid" property="pid"></result>
+        <result column="remark" property="remark"></result>
+        <collection property="children" column="id" ofType="com.example.demo.entity.Category" select="selectByPid"></collection>
+    </resultMap>
+    <select id="selectByPid"  resultType="com.example.demo.entity.Category">
+        select * from category where pid = #{pid}
+    </select>
+    
+    <select id="listByCondition" resultMap="categoryMap">
+        select * from category
+        <where>
+            isnull(pid)
+            <if test="id!=null and id!=''">
+                and id like concat('%',#{id},'%' )
+            </if>
+            <if test="name!=null and name!=''">
+                and name like concat('%',#{ name },'%' )
+            </if>
+            <if test="pid!=null and pid!=''">
+                and pid like concat('%',#{ pid },'%' )
+            </if>
+        </where>
+    </select>
+    <select id="listByCondition2" resultMap="categoryMap">
+        select * from category
+        <where>
+            <if test="id!=null and id!=''">
+                id like concat('%',#{id},'%' )
+            </if>
+            <if test="name!=null and name!=''">
+                and name like concat('%',#{ name },'%' )
+            </if>
+            <if test="pid!=null and pid!=''">
+                and pid like concat('%',#{ pid },'%' )
+            </if>
+        </where>
+    </select>
+    <select id="getById" resultType="com.example.demo.entity.Category">
+        select * from category where id = #{id}
+
+    </select>
+    <select id="list1" resultType="com.example.demo.entity.Category">
+        select * from category where pid IS NULL
+    </select>
+
+</mapper>

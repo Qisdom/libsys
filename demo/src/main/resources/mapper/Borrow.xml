@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.BorrowMapper">
+    <insert id="save">
+        insert into borrow(id,uid,bid,uname,bname)
+        values(#{id},#{uid},#{bid},#{uname},#{bname})
+    </insert>
+    <update id="updateById">
+        update borrow set updatetime = CURRENT_TIMESTAMP ,returned = '是' where id = #{id}
+    </update>
+    <update id="edit">
+        update borrow set createtime = #{createtime} , updatetime = #{updatetime} ,returned = #{returned} where id = #{id}
+    </update>
+    <delete id="deleteById">
+        delete from borrow where id = #{id}
+    </delete>
+
+    <select id="list" resultType="com.example.demo.entity.Borrow">
+        select * from borrow
+    </select>
+
+    <select id="listByCondition" resultType="com.example.demo.entity.Borrow">
+        SELECT id,uid,uname,bid,bname,createtime,updatetime,returned
+        FROM borrow
+        <where>
+            <if test="id!=null and id!=''">
+                and id like concat('%',#{id},'%' )
+            </if>
+            <if test="uname!=null and uname!=''">
+                and uname like concat('%',#{ uname },'%' )
+            </if>
+            <if test="bname!=null and bname!=''">
+                and bname like concat('%',#{ bname },'%' )
+            </if>
+            <if test="returned!=null and returned!=''">
+                and returned like concat('%',#{ returned },'%' )
+            </if>
+        </where>
+    </select>
+    <select id="getById" resultType="com.example.demo.entity.Borrow">
+        select * from borrow where id = #{id}
+
+    </select>
+</mapper>
